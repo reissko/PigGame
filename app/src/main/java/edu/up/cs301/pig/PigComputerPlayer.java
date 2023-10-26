@@ -1,5 +1,7 @@
 package edu.up.cs301.pig;
 
+import android.os.CountDownTimer;
+
 import edu.up.cs301.game.GameComputerPlayer;
 import edu.up.cs301.game.actionMsg.GameAction;
 import edu.up.cs301.game.infoMsg.GameInfo;
@@ -28,7 +30,31 @@ public class PigComputerPlayer extends GameComputerPlayer {
      */
     @Override
     protected void receiveInfo(GameInfo info) {
-        // TODO  You will implement this method
+        if(info instanceof PigGameState){
+            PigGameState gameInfo = (PigGameState) info;
+            if (this.playerNum != gameInfo.getPlayerTurn()) { //if it's not the computer player's turn, return
+                return;
+            } else { //if it is the computer player's turn, choose a random action (roll or hold)
+                double choice = Math.random();
+                while(choice < .5) { //will perform a roll action
+                    PigRollAction roll = new PigRollAction(this);
+                    game.sendAction(roll);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    choice = Math.random();
+                }
+                PigHoldAction hold = new PigHoldAction(this);
+                game.sendAction(hold);
+                if (playerNum == 0) { // computer player is player 0
+                    gameInfo.setPlayerTurn(1);
+                } else if (playerNum == 1) {// computer player is player 1
+                    gameInfo.setPlayerTurn(0);
+                }
+            }
+        }
     }//receiveInfo
 
 }

@@ -3,9 +3,6 @@ package edu.up.cs301.pig;
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.LocalGame;
 import edu.up.cs301.game.actionMsg.GameAction;
-import edu.up.cs301.game.infoMsg.GameState;
-
-import android.util.Log;
 
 // dummy comment, to see if commit and push work from srvegdahl account
 
@@ -17,11 +14,13 @@ import android.util.Log;
  */
 public class PigLocalGame extends LocalGame {
 
+    PigGameState gameState;
+
     /**
      * This ctor creates a new game state
      */
     public PigLocalGame() {
-        //TODO  You will implement this constructor
+        gameState = new PigGameState();
     }
 
     /**
@@ -29,8 +28,7 @@ public class PigLocalGame extends LocalGame {
      */
     @Override
     protected boolean canMove(int playerIdx) {
-        //TODO  You will implement this method
-        return false;
+        return (playerIdx == gameState.getPlayerTurn());
     }
 
     /**
@@ -40,7 +38,40 @@ public class PigLocalGame extends LocalGame {
      */
     @Override
     protected boolean makeMove(GameAction action) {
-        //TODO  You will implement this method
+        int player = gameState.getPlayerTurn();
+        if(action instanceof PigHoldAction) {
+            if(player == 0) {
+                gameState.setPlayer0Score(gameState.getPlayer0Score() + gameState.getHoldAmt());
+                gameState.setHoldAmt(0);
+                if(playerNames.length > 1) {
+                    gameState.setPlayerTurn(1);
+                }
+                return true;
+            } else if(player == 1){
+                gameState.setPlayer1Score(gameState.getPlayer1Score() + gameState.getHoldAmt());
+                gameState.setHoldAmt(0);
+                if(playerNames.length > 1) {
+                    gameState.setPlayerTurn(0);
+                }
+                return true;
+            }
+        } else if(action instanceof PigRollAction) {
+            int rand = (int)((Math.random()*6)+1);
+            gameState.setDiceVal(rand);
+            if(rand != 1) {
+                gameState.setHoldAmt(gameState.getHoldAmt()+rand);
+            } else {
+                gameState.setHoldAmt(0);
+                if(playerNames.length > 1) {
+                    if (player == 0) {
+                        gameState.setPlayerTurn(1);
+                    } else if (player == 1) {
+                        gameState.setPlayerTurn(0);
+                    }
+                }
+            }
+            return true;
+        }
         return false;
     }//makeMove
 
@@ -49,7 +80,8 @@ public class PigLocalGame extends LocalGame {
      */
     @Override
     protected void sendUpdatedStateTo(GamePlayer p) {
-        //TODO  You will implement this method
+        PigGameState copyState = new PigGameState(gameState);
+        p.sendInfo(copyState);
     }//sendUpdatedSate
 
     /**
@@ -61,7 +93,11 @@ public class PigLocalGame extends LocalGame {
      */
     @Override
     protected String checkIfGameOver() {
-        //TODO  You will implement this method
+        if(gameState.getPlayer0Score() >= 50) {
+            return playerNames[0] + " Wins!";
+        } else if(gameState.getPlayer1Score() >= 50) {
+            return playerNames[1] + " Wins!";
+        }
         return null;
     }
 
