@@ -1,6 +1,9 @@
 package edu.up.cs301.pig;
 
+import android.graphics.Color;
 import android.os.CountDownTimer;
+import android.util.Log;
+import android.widget.ImageButton;
 
 import edu.up.cs301.game.GameComputerPlayer;
 import edu.up.cs301.game.actionMsg.GameAction;
@@ -36,23 +39,18 @@ public class PigComputerPlayer extends GameComputerPlayer {
                 return;
             } else { //if it is the computer player's turn, choose a random action (roll or hold)
                 double choice = Math.random();
-                while(choice < .5) { //will perform a roll action
+
+                if(choice < .5) { //will perform a roll action
                     PigRollAction roll = new PigRollAction(this);
+                    sleep(2000);
                     game.sendAction(roll);
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    choice = Math.random();
+                    Log.i("Computer player", "roll action");
+                    return;
                 }
+                sleep(1000);
                 PigHoldAction hold = new PigHoldAction(this);
+                Log.i("Computer player", "hold action");
                 game.sendAction(hold);
-                if (playerNum == 0) { // computer player is player 0
-                    gameInfo.setPlayerTurn(1);
-                } else if (playerNum == 1) {// computer player is player 1
-                    gameInfo.setPlayerTurn(0);
-                }
             }
         }
     }//receiveInfo

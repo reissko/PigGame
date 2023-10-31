@@ -67,6 +67,11 @@ public class PigHumanPlayer extends GameHumanPlayer implements OnClickListener {
             return;
         } else {
             PigGameState gameState = (PigGameState) info;
+            if(gameState.getPlayerTurn() == 0) {
+                dieImageButton.setBackgroundColor(Color.GREEN);
+            } else if(gameState.getPlayerTurn() == 1) {
+                dieImageButton.setBackgroundColor(Color.RED);
+            }
             if(playerNum == 0) { // human player is player 0
                 playerScoreTextView.setText(String.valueOf(gameState.getPlayer0Score()));
                 oppScoreTextView.setText(String.valueOf(gameState.getPlayer1Score()));

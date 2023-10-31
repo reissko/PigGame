@@ -1,5 +1,7 @@
 package edu.up.cs301.pig;
 
+import android.util.Log;
+
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.LocalGame;
 import edu.up.cs301.game.actionMsg.GameAction;
@@ -45,22 +47,27 @@ public class PigLocalGame extends LocalGame {
                 gameState.setHoldAmt(0);
                 if(playerNames.length > 1) {
                     gameState.setPlayerTurn(1);
+                    //Log.i("Player turns switched", Integer.toString(gameState.getPlayerTurn()));
                 }
-                return true;
             } else if(player == 1){
                 gameState.setPlayer1Score(gameState.getPlayer1Score() + gameState.getHoldAmt());
                 gameState.setHoldAmt(0);
                 if(playerNames.length > 1) {
                     gameState.setPlayerTurn(0);
+                    //Log.i("Player turns switched", Integer.toString(gameState.getPlayerTurn()));
                 }
-                return true;
             }
+            return true;
         } else if(action instanceof PigRollAction) {
             int rand = (int)((Math.random()*6)+1);
+
+            //Log.i("Player who rolled", Integer.toString(gameState.getPlayerTurn()));
+            //Log.i("Dice Roll Value", Integer.toString(rand));
+
             gameState.setDiceVal(rand);
-            if(rand != 1) {
+            if(rand != 1) { //if the player rolled anything but a 1 increase the running hold amount
                 gameState.setHoldAmt(gameState.getHoldAmt()+rand);
-            } else {
+            } else { //if the player did roll a 1
                 gameState.setHoldAmt(0);
                 if(playerNames.length > 1) {
                     if (player == 0) {
@@ -68,9 +75,10 @@ public class PigLocalGame extends LocalGame {
                     } else if (player == 1) {
                         gameState.setPlayerTurn(0);
                     }
+                    Log.i("Player turns switched", Integer.toString(gameState.getPlayerTurn()));
                 }
             }
-            return true;
+                return true;
         }
         return false;
     }//makeMove
