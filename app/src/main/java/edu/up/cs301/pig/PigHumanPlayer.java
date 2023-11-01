@@ -15,6 +15,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 
+import org.w3c.dom.Text;
+
 /**
  * A GUI for a human to play Pig. This default version displays the GUI but is incomplete
  *
@@ -29,10 +31,13 @@ public class PigHumanPlayer extends GameHumanPlayer implements OnClickListener {
     // These variables will reference widgets that will be modified during play
     private TextView    playerScoreTextView = null;
     private TextView    oppScoreTextView    = null;
+    private TextView    yourScoreText = null;
+    private TextView    oppScoreText = null;
     private TextView    turnTotalTextView   = null;
-    private TextView    messageTextView     = null;
+    private static TextView    messageTextView     = null;
     private ImageButton dieImageButton      = null;
     private Button      holdButton          = null;
+    private PigGameState gameState;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
@@ -66,7 +71,7 @@ public class PigHumanPlayer extends GameHumanPlayer implements OnClickListener {
             flash(Color.RED,500);
             return;
         } else {
-            PigGameState gameState = (PigGameState) info;
+            gameState = (PigGameState) info;
             if(gameState.getPlayerTurn() == 0) {
                 dieImageButton.setBackgroundColor(Color.GREEN);
             } else if(gameState.getPlayerTurn() == 1) {
@@ -107,13 +112,34 @@ public class PigHumanPlayer extends GameHumanPlayer implements OnClickListener {
      */
     public void onClick(View button) {
         if(button instanceof Button) {
+            if(playerNum == 0) {
+                messageTextView.setText(name + " added " + gameState.getHoldAmt() + " to their score");
+            } else if(playerNum == 1) {
+                messageTextView.setText(name + " added " + gameState.getHoldAmt() + " to their score");
+            }
+            messageTextView.setText(name + " added " + gameState.getHoldAmt() + " to their score");
             PigHoldAction hold = new PigHoldAction(this);
             game.sendAction(hold);
         } else if(button instanceof ImageButton) {
             PigRollAction roll = new PigRollAction(this);
             game.sendAction(roll);
+            if(playerNum == 0 && gameState.getPlayer0Score() != 0 && gameState.getPlayer1Score() != 0) {
+                if (gameState.getDiceVal() == 1) {
+                    messageTextView.setText("Oh no! " + name + " rolled a 1 and lost everything!");
+                }
+            } else if(playerNum == 1) {
+                if(gameState.getDiceVal() == 1) {
+                    messageTextView.setText("Oh no! " + name + " rolled a 1 and lost everything!");
+                }
+            }
         }
     }// onClick
+
+    public static void changeMessageTextView(String text) {
+        if(messageTextView != null) {
+            messageTextView.setText(text);
+        }
+    }
 
     /**
      * callback method--our game has been chosen/rechosen to be the GUI,
@@ -133,6 +159,8 @@ public class PigHumanPlayer extends GameHumanPlayer implements OnClickListener {
         //Initialize the widget reference member variables
         this.playerScoreTextView = (TextView)activity.findViewById(R.id.yourScoreValue);
         this.oppScoreTextView    = (TextView)activity.findViewById(R.id.oppScoreValue);
+        this.yourScoreText       = (TextView)activity.findViewById(R.id.yourScoreText);
+        this.oppScoreText        = (TextView)activity.findViewById(R.id.oppScoreText);
         this.turnTotalTextView   = (TextView)activity.findViewById(R.id.turnTotalValue);
         this.messageTextView     = (TextView)activity.findViewById(R.id.messageTextView);
         this.dieImageButton      = (ImageButton)activity.findViewById(R.id.dieButton);
@@ -144,4 +172,9 @@ public class PigHumanPlayer extends GameHumanPlayer implements OnClickListener {
 
     }//setAsGui
 
+    @Override
+    protected void initAfterReady() {
+        yourScoreText.setText(allPlayerNames[0] + " Score: ");
+        oppScoreText.setText(allPlayerNames[1] + " Score: ");
+    }
 }// class PigHumanPlayer

@@ -1,5 +1,7 @@
 package edu.up.cs301.pig;
 
+import android.widget.TextView;
+
 import edu.up.cs301.game.infoMsg.GameState;
 
 

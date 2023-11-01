@@ -44,6 +44,7 @@ public class PigLocalGame extends LocalGame {
         if(action instanceof PigHoldAction) {
             if(player == 0) {
                 gameState.setPlayer0Score(gameState.getPlayer0Score() + gameState.getHoldAmt());
+                PigHumanPlayer.changeMessageTextView(playerNames[0] + " added " + gameState.getHoldAmt() + " to their score");
                 gameState.setHoldAmt(0);
                 if(playerNames.length > 1) {
                     gameState.setPlayerTurn(1);
@@ -51,6 +52,7 @@ public class PigLocalGame extends LocalGame {
                 }
             } else if(player == 1){
                 gameState.setPlayer1Score(gameState.getPlayer1Score() + gameState.getHoldAmt());
+                PigHumanPlayer.changeMessageTextView(playerNames[1] + " added " + gameState.getHoldAmt() + " to their score");
                 gameState.setHoldAmt(0);
                 if(playerNames.length > 1) {
                     gameState.setPlayerTurn(0);
@@ -60,15 +62,17 @@ public class PigLocalGame extends LocalGame {
             return true;
         } else if(action instanceof PigRollAction) {
             int rand = (int)((Math.random()*6)+1);
-
-            //Log.i("Player who rolled", Integer.toString(gameState.getPlayerTurn()));
-            //Log.i("Dice Roll Value", Integer.toString(rand));
-
             gameState.setDiceVal(rand);
             if(rand != 1) { //if the player rolled anything but a 1 increase the running hold amount
                 gameState.setHoldAmt(gameState.getHoldAmt()+rand);
             } else { //if the player did roll a 1
                 gameState.setHoldAmt(0);
+                if(player == 0){
+                    PigHumanPlayer.changeMessageTextView("Oh no! " + playerNames[0] + " rolled a 1 and lost everything!");
+                } else if(player == 1) {
+                    PigHumanPlayer.changeMessageTextView("Oh no! " + playerNames[1] + " rolled a 1 and lost everything!");
+
+                }
                 if(playerNames.length > 1) {
                     if (player == 0) {
                         gameState.setPlayerTurn(1);

@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.ImageButton;
 
+import edu.up.cs301.game.Game;
 import edu.up.cs301.game.GameComputerPlayer;
 import edu.up.cs301.game.actionMsg.GameAction;
 import edu.up.cs301.game.infoMsg.GameInfo;
@@ -44,12 +45,15 @@ public class PigComputerPlayer extends GameComputerPlayer {
                     PigRollAction roll = new PigRollAction(this);
                     sleep(2000);
                     game.sendAction(roll);
+
                     Log.i("Computer player", "roll action");
                     return;
                 }
                 sleep(1000);
                 PigHoldAction hold = new PigHoldAction(this);
                 Log.i("Computer player", "hold action");
+
+                PigHumanPlayer.changeMessageTextView(name + " added" + gameInfo.getHoldAmt() + " to their score");
                 game.sendAction(hold);
             }
         }

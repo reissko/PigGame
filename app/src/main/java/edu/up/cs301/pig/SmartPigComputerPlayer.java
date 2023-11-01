@@ -33,13 +33,13 @@ public class SmartPigComputerPlayer extends PigComputerPlayer {
             if(myScore + gameInfo.getHoldAmt() >= opponentScore) { //if the smart ai is ahead or equal to human player then roll and hold
                 PigRollAction roll = new PigRollAction(this);
                 game.sendAction(roll);
+
                 PigHoldAction hold = new PigHoldAction(this);
                 game.sendAction(hold);
                 return;
             }
             /*if the smart ai player is behind on points the ai will roll until the point difference is made up and
             will then hold the amount to make up the difference*/
-
             if(opponentScore > myScore + gameInfo.getHoldAmt()) {
                 PigRollAction catchUpRoll = new PigRollAction(this);
                 game.sendAction(catchUpRoll);
